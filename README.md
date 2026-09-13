@@ -1,0 +1,1 @@
+# astrbot_plugin_deepseek_peak_switch
