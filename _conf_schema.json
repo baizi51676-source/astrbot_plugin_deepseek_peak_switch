@@ -1,0 +1,81 @@
+{
+  "enabled": {
+    "description": "启用自动切换",
+    "hint": "总开关。关闭后插件不做任何切换。",
+    "type": "bool",
+    "default": true
+  },
+  "bot_rules": {
+    "description": "多 bot 切换规则",
+    "hint": "为每个 bot 配置高低峰模型：bot 填「平台实例 ID」或「QQ号」；模型为下拉选择（列出你在 AstrBot 中已配置的模型提供商）。某一档留空则该时段不切换。",
+    "type": "template_list",
+    "default": [],
+    "obvious_hint": true,
+    "templates": {
+      "rule": {
+        "name": "切换规则",
+        "display_item": "name",
+        "items": {
+          "name": {
+            "description": "备注名",
+            "type": "string",
+            "default": ""
+          },
+          "bots": {
+            "description": "bot 列表（平台实例 ID 或 QQ号）",
+            "hint": "可填多个。不知道填什么？对该 bot 发送 /ds_switch_status，直接复制输出的 platform_id 或 self_id。",
+            "type": "list",
+            "items": {"type": "string"},
+            "default": []
+          },
+          "offpeak_provider": {
+            "description": "低峰模型（提供商）",
+            "hint": "低峰时段使用；留空 = 低峰时不切换。",
+            "type": "string",
+            "default": "",
+            "_special": "select_provider"
+          },
+          "peak_provider": {
+            "description": "高峰模型（提供商）",
+            "hint": "高峰时段使用；留空 = 高峰时不切换。",
+            "type": "string",
+            "default": "",
+            "_special": "select_provider"
+          }
+        }
+      }
+    }
+  },
+  "default_peak_provider": {
+    "description": "默认高峰模型（未匹配任何规则的 bot）",
+    "hint": "可选。未匹配规则的 bot 在高峰时使用；留空 = 不处理。",
+    "type": "string",
+    "default": "",
+    "_special": "select_provider"
+  },
+  "default_offpeak_provider": {
+    "description": "默认低峰模型（未匹配任何规则的 bot）",
+    "hint": "可选。未匹配规则的 bot 在低峰时使用；留空 = 不处理。",
+    "type": "string",
+    "default": "",
+    "_special": "select_provider"
+  },
+  "auto_fetch": {
+    "description": "定时拉取官方文档更新时段",
+    "hint": "插件启动后与每 N 小时自动从 DeepSeek 官方定价页解析高峰时段；失败自动沿用上次结果或内置默认。",
+    "type": "bool",
+    "default": true
+  },
+  "fetch_interval_hours": {
+    "description": "拉取间隔（小时）",
+    "hint": "默认 24 小时；最小 0.25（15 分钟）。",
+    "type": "int",
+    "default": 24
+  },
+  "docs_url": {
+    "description": "官方文档地址",
+    "hint": "默认官方中文定价页（含高峰时段说明）；一般无需修改。",
+    "type": "string",
+    "default": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
+  }
+}
