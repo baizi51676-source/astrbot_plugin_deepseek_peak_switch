@@ -5,6 +5,79 @@
     "type": "bool",
     "default": true
   },
+  "schedule_mode": {
+    "description": "时段模式",
+    "hint": "自动：定时拉取 DeepSeek 官方文档解析高峰时段（推荐）；手动：使用下方自定义星期与时段，不再拉取文档时段。",
+    "type": "string",
+    "options": ["auto", "manual"],
+    "labels": ["自动（拉取官方文档）", "手动（自定义时段）"],
+    "default": "auto"
+  },
+  "manual_kind": {
+    "description": "自定义时段含义",
+    "hint": "所填「星期 + 时段」代表高峰还是低峰；另一部分自动视为相反时段（节假日规则仍单独生效）。",
+    "type": "string",
+    "options": ["peak", "offpeak"],
+    "labels": ["所填为高峰时段（其余为低峰）", "所填为低峰时段（其余为高峰）"],
+    "default": "peak"
+  },
+  "manual_weekdays": {
+    "description": "自定义星期",
+    "hint": "数字 1-7（1=周一，7=周日）或中文（一~日/天），支持区间与多个：[\"1-5\"]、[\"1,3,5\"]、[\"一-五\"]。",
+    "type": "list",
+    "items": {"type": "string"},
+    "default": ["1-5"]
+  },
+  "manual_windows": {
+    "description": "自定义时段",
+    "hint": "格式 HH:MM-HH:MM，可多个：[\"09:00-12:00\", \"14:00-18:00\"]；支持跨天（如 23:00-01:00）。",
+    "type": "list",
+    "items": {"type": "string"},
+    "default": ["09:00-12:00", "14:00-18:00"]
+  },
+  "auto_fetch": {
+    "description": "定时拉取官方文档更新时段（自动模式）",
+    "hint": "插件启动后与每 N 小时自动从 DeepSeek 官方定价页解析高峰时段；失败自动回退：备用页面 → 上次成功结果 → 内置默认。",
+    "type": "bool",
+    "default": true
+  },
+  "fetch_interval_hours": {
+    "description": "拉取间隔（小时）",
+    "hint": "默认 24 小时；最小 0.25（15 分钟）。",
+    "type": "int",
+    "default": 24
+  },
+  "docs_url": {
+    "description": "官方文档地址",
+    "hint": "默认官方中文定价页（含高峰时段说明）；一般无需修改。",
+    "type": "string",
+    "default": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
+  },
+  "docs_url_fallback": {
+    "description": "备用文档地址",
+    "hint": "主地址解析失败时自动尝试该地址（默认英文定价页）。",
+    "type": "string",
+    "default": "https://api-docs.deepseek.com/quick_start/pricing"
+  },
+  "respect_holidays": {
+    "description": "识别中国法定节假日",
+    "hint": "开启后，法定节假日全天按低峰（空闲时段）处理；数据来自下方地址（在线获取并缓存到本地），也可用「手动节假日日期」补充。",
+    "type": "bool",
+    "default": true
+  },
+  "holiday_url": {
+    "description": "节假日数据地址",
+    "hint": "支持 {year} 占位符（自动替换为年份）。默认为公开的 holiday-cn 数据源（国内可访问）。",
+    "type": "string",
+    "default": "https://cdn.jsdelivr.net/gh/NateScarlet/holiday-cn@master/{year}.json"
+  },
+  "holiday_dates": {
+    "description": "手动节假日日期",
+    "hint": "补充/覆盖的日期（YYYY-MM-DD），如 [\"2026-10-01\"]。",
+    "type": "list",
+    "items": {"type": "string"},
+    "default": []
+  },
   "bot_rules": {
     "description": "多 bot 切换规则",
     "hint": "为每个 bot 配置高低峰模型：bot 填「平台实例 ID」或「QQ号」；模型为下拉选择（列出你在 AstrBot 中已配置的模型提供商）。某一档留空则该时段不切换。",
@@ -59,23 +132,5 @@
     "type": "string",
     "default": "",
     "_special": "select_provider"
-  },
-  "auto_fetch": {
-    "description": "定时拉取官方文档更新时段",
-    "hint": "插件启动后与每 N 小时自动从 DeepSeek 官方定价页解析高峰时段；失败自动沿用上次结果或内置默认。",
-    "type": "bool",
-    "default": true
-  },
-  "fetch_interval_hours": {
-    "description": "拉取间隔（小时）",
-    "hint": "默认 24 小时；最小 0.25（15 分钟）。",
-    "type": "int",
-    "default": 24
-  },
-  "docs_url": {
-    "description": "官方文档地址",
-    "hint": "默认官方中文定价页（含高峰时段说明）；一般无需修改。",
-    "type": "string",
-    "default": "https://api-docs.deepseek.com/zh-cn/quick_start/pricing"
   }
 }
