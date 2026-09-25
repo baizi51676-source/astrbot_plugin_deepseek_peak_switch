@@ -106,7 +106,7 @@ def _weekdays_of(seg: str) -> frozenset[int] | None:
         a, b = _CN_DAY_MAP[m.group(1)], _CN_DAY_MAP[m.group(2)]
         if a <= b:
             return frozenset(range(a, b + 1))
-        return frozenset(list(range(a, 7)) + list(range(0, b + 1)))
+        return frozenset(list(range(a, 7)) + list(range(b + 1)))
     m2 = re.search(
         r"(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\s*"
         r"(?:through|thru|to|~|—|–|-)\s*"
@@ -117,7 +117,7 @@ def _weekdays_of(seg: str) -> frozenset[int] | None:
         a, b = _EN_WEEKDAY_MAP[m2.group(1)], _EN_WEEKDAY_MAP[m2.group(2)]
         if a <= b:
             return frozenset(range(a, b + 1))
-        return frozenset(list(range(a, 7)) + list(range(0, b + 1)))
+        return frozenset(list(range(a, 7)) + list(range(b + 1)))
     return None
 
 def parse_peak_schedule(
@@ -218,7 +218,7 @@ def _parse_manual_weekdays(items) -> frozenset[int] | None:
                 if a <= b:
                     days.update(range(a, b + 1))
                 else:
-                    days.update(list(range(a, 7)) + list(range(0, b + 1)))
+                    days.update(list(range(a, 7)) + list(range(b + 1)))
                 continue
             d = _day_token(token)
             if d is None:
@@ -306,7 +306,7 @@ class DeepSeekPeakSwitchPlugin(Star):
                 await task
             except asyncio.CancelledError:
                 pass
-            except Exception:  # noqa: BLE001
+            except Exception:
                 pass
         self._fetch_task = None
 
@@ -360,7 +360,7 @@ class DeepSeekPeakSwitchPlugin(Star):
                     await self._fetch_holidays_once()
             except asyncio.CancelledError:
                 raise
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.error(f"{_TAG} 后台更新任务异常：{e}")
             await asyncio.sleep(self._cfg_interval_hours() * 3600)
 
@@ -381,7 +381,7 @@ class DeepSeekPeakSwitchPlugin(Star):
                 html = await self._http_get(url)
             except asyncio.CancelledError:
                 raise
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 last_err = f"{type(e).__name__}: {e}"
                 continue
             parsed = parse_peak_schedule(html)
@@ -418,13 +418,13 @@ class DeepSeekPeakSwitchPlugin(Star):
             text = await self._http_get(url)
         except asyncio.CancelledError:
             raise
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             self._holiday_error = f"{type(e).__name__}: {e}"
             logger.warning(f"{_TAG} 拉取节假日数据失败：{self._holiday_error}")
             return False
         try:
             dates = parse_holiday_json(text)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             self._holiday_error = f"数据解析失败：{e}"
             logger.warning(f"{_TAG} 节假日数据解析失败：{e}")
             return False
@@ -447,7 +447,7 @@ class DeepSeekPeakSwitchPlugin(Star):
             data_dir = StarTools.get_data_dir(PLUGIN_NAME)
             os.makedirs(str(data_dir), exist_ok=True)
             return os.path.join(str(data_dir), name)
-        except Exception:  # noqa: BLE001
+        except Exception:
             return None
 
     async def _load_cache(self) -> None:
@@ -479,7 +479,7 @@ class DeepSeekPeakSwitchPlugin(Star):
                         f"{_TAG} 已加载本机缓存时段：{_fmt_weekdays(weekdays)} "
                         f"{_fmt_windows(windows)}"
                     )
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(f"{_TAG} 读取时段缓存失败：{e}")
 
         # 节假日缓存
@@ -503,7 +503,7 @@ class DeepSeekPeakSwitchPlugin(Star):
                             except ValueError:
                                 self._holiday_updated = None
                         logger.info(f"{_TAG} 已加载节假日缓存：共 {len(dates)} 天")
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:
                 logger.warning(f"{_TAG} 读取节假日缓存失败：{e}")
 
     async def _save_cache(self) -> None:
@@ -521,7 +521,7 @@ class DeepSeekPeakSwitchPlugin(Star):
             }
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(f"{_TAG} 写入时段缓存失败：{e}")
 
     async def _save_holiday_cache(self, year: int) -> None:
@@ -538,7 +538,7 @@ class DeepSeekPeakSwitchPlugin(Star):
             }
             with open(path, "w", encoding="utf-8") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.warning(f"{_TAG} 写入节假日缓存失败：{e}")
 
     # ---------- 时段与规则判定 ----------
@@ -649,7 +649,7 @@ class DeepSeekPeakSwitchPlugin(Star):
             if isinstance(inst_map, dict):
                 return isinstance(inst_map.get(provider_id), Provider)
             return isinstance(self.context.get_provider_by_id(provider_id), Provider)
-        except Exception:  # noqa: BLE001
+        except Exception:
             return False
 
     def _warn_missing(self, provider_id: str) -> None:
@@ -684,7 +684,7 @@ class DeepSeekPeakSwitchPlugin(Star):
                     f"{_TAG} {bot_key} 已切换到"
                     f"{'高峰' if mode == 'peak' else '低峰'}模型：{provider_id}"
                 )
-        except Exception as e:  # noqa: BLE001
+        except Exception as e:
             logger.error(f"{_TAG} 消息处理出错：{e}")
 
     # ---------- 指令 ----------

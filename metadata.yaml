@@ -3,7 +3,7 @@ display_name: DeepSeek高峰低峰自动切换
 short_desc: 按官方时段自动切换高低峰模型，支持节假日与手动时段配置
 desc: 按 DeepSeek 官方高峰/低峰时段，为不同 bot 自动切换模型提供商；支持自动拉取官方文档、法定节假日识别、手动自由配置时段、多 bot 独立配置与强制切换
 help: 在插件配置中为每个 bot 添加切换规则（平台实例ID或QQ号 + 高低峰模型提供商）；时段可选自动（拉取官方文档，含节假日识别）或手动自定义；指令：/ds_switch_status 查看状态、/ds_switch_refresh 刷新时段、/ds_switch_force 强制切换
-version: v1.1.0
+version: 1.1.1
 author: baizi51676-source
 repo: https://github.com/baizi51676-source/astrbot_plugin_deepseek_peak_switch
 astrbot_version: ">=4.16,<5"
